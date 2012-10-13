@@ -3,7 +3,7 @@ Contributors: MMDeveloper
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
 Tested up to: 3.4.2
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,3 +25,15 @@ https://github.com/TheOnlineHero/WP-SEO-Redirect-301/zipball/master
 
 
 Thats it, you don't need to worry, update your page urls and this plugin will redirect your users to the updated url.
+
+
+== Changelog ==
+
+
+= 1.1 =
+
+* Fixed up updating children urls. So now if parent slug name changes, the child slugs are updated as well. For example, lets say you have a page called http://localhost/cars with a child page http://localhost/cars/holden, if you change the slug name to car and you navigated to http://localhost/cars it will redirect you to http://localhost/car. Similarly if you navigated to http://localhost/cars/holden it will redirect you to http://localhost/car/holden.
+
+= 1.0 =
+
+* Initial Checkin

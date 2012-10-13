@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: https://github.com/TheOnlineHero/WP-SEO-Redirect-301
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.0
+Version: 1.1
 Author: The Online Hero - Tom Skroza
 License: GPL2
 */
@@ -11,27 +11,16 @@ License: GPL2
 add_action( 'save_post', 'save_current_slug' );
 function save_current_slug( $postid ) {
 	global $wpdb;
-  $table_name = $wpdb->prefix . "slug_history";
-  
-  $current_post_id = "";
-	$sql = "SELECT * FROM wp_posts where post_type='revision' AND id='$postid'";
-	$results=$wpdb->get_results($sql);
-  if ($wpdb->num_rows > 0) {
-  	foreach ($results as $row){
-	  	$current_post_id = $row->post_parent;
-		}
-	}
-
-  $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $current_post_id, 'url' => get_permalink( $current_post_id )) );
-
-	$child_pages = get_posts( array('post_type' => 'page','post_parent' => $portfolio->ID,'orderby' => 'menu_order'));
-	
+  $table_name = $wpdb->prefix . "slug_history";  
+  $post_table = $wpdb->prefix . "posts";
+  $my_revision = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $post_table WHERE post_type='revision' AND id= %d", $postid) );
+  $my_post = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $post_table WHERE post_type IN ('page', 'post') AND id=%d", $my_revision->post_parent) );
+  $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $my_post->ID, 'url' => get_permalink( $my_post->ID )) );
+	$child_pages = get_posts( array('post_type' => 'page','post_parent' => $my_post->ID,'orderby' => 'menu_order'));
 	foreach ($child_pages as $child_page) {
 		$rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $child_page->ID, 'url' => get_permalink( $child_page->ID )) );
 	}
-
 }
-
 
 function curPageURL() {
  $pageURL = 'http';
