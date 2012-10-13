@@ -17,7 +17,7 @@ Installation:
 1) Install WordPress 3.4.2 or higher
 
 2) Download the following file:
-https://github.com/TheOnlineHero/WP-SEO-Redirect-301/zipball/master
+Plugin URI: http://downloads.wordpress.org/plugin/wp-seo-redirect-301.1.1.zip
 
 3) Login to WordPress admin, click on Plugins / Add New / Upload, then upload the zip file you just downloaded.
 
