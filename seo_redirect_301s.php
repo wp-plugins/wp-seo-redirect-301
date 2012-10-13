@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: SEO Redirect 301s
-Plugin URI: https://github.com/TheOnlineHero/WP-SEO-Redirect-301
+Plugin URI: http://downloads.wordpress.org/plugin/wp-seo-redirect-301.1.1.zip
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
 Version: 1.1
 Author: The Online Hero - Tom Skroza
