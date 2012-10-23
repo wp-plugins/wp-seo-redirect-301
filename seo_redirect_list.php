@@ -58,4 +58,4 @@ wp_enqueue_script('jquery');
 </div>
 </div>
 
-<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://wordpress.org/support/plugin/wp-seo-redirect-301"><img style="width: 30px;" src="http://profile.ak.fbcdn.net/hprofile-ak-prn1/174834_20531316728_3694083_n.jpg" /></a>
+<a target="_blank" title="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://wordpress.org/support/plugin/wp-seo-redirect-301"><img style="width: 30px;" src="http://profile.ak.fbcdn.net/hprofile-ak-prn1/174834_20531316728_3694083_n.jpg" /></a>
