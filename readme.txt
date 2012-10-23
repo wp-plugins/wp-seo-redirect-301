@@ -17,7 +17,7 @@ Installation:
 1) Install WordPress 3.4.2 or higher
 
 2) Download the following file:
-http://downloads.wordpress.org/plugin/wp-seo-redirect-301.1.2.zip
+http://downloads.wordpress.org/plugin/wp-seo-redirect-301.1.3.zip
 
 3) Login to WordPress admin, click on Plugins / Add New / Upload, then upload the zip file you just downloaded.
 
