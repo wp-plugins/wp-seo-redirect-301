@@ -3,7 +3,7 @@ Contributors: MMDeveloper
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
 Tested up to: 3.4.2
-Stable tag: 1.5
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,8 +16,9 @@ Installation:
 
 1) Install WordPress 3.4.2 or higher
 
-2) Download the following file:
-http://downloads.wordpress.org/plugin/wp-seo-redirect-301.1.5.zip
+2) Download the following files:
+http://downloads.wordpress.org/plugin/tom-m8te.1.2.zip
+http://downloads.wordpress.org/plugin/wp-seo-redirect-301.1.6.zip
 
 3) Login to WordPress admin, click on Plugins / Add New / Upload, then upload the zip file you just downloaded.
 
@@ -29,6 +30,10 @@ Thats it, you don't need to worry, update your page urls and this plugin will re
 If you click on "SEO Redirect 301" menu link, you will see a list of old urls pointing to the new ones. Its here where you can delete ones you don't want anymore.
 
 == Changelog ==
+
+= 1.6 =
+
+* Dependent on plugin Tom M8te to make some features easier to code. There is no new features since 1.5.
 
 = 1.5 =
 

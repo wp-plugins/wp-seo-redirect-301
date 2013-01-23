@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__).'../../../../wp-admin/admin.php'); 
-
 global $wpdb;
 $table_name = $wpdb->prefix."slug_history";
 
@@ -58,5 +56,4 @@ wp_enqueue_script('jquery');
 </div>
 </div>
 
-<a target="_blank" title="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://wordpress.org/support/plugin/wp-seo-redirect-301"><img style="width: 30px;" src="http://profile.ak.fbcdn.net/hprofile-ak-prn1/174834_20531316728_3694083_n.jpg" style="width: 30px;" /></a>
-<a title="Share On Twitter" target="_blank" href="http://twitter.com/intent/tweet?url=http://wordpress.org/extend/plugins/wp-seo-redirect-301"><img style="width: 30px;" src="http://www.connectedaustralia.com/Portals/1/twitter_icon.gif" style="width: 30px;" /></a>
+<?php tom_add_social_share_links("http://wordpress.org/extend/plugins/wp-seo-redirect-301") ?>
