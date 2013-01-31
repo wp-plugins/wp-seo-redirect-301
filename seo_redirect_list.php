@@ -56,4 +56,4 @@ wp_enqueue_script('jquery');
 </div>
 </div>
 
-<?php tom_add_social_share_links("http://wordpress.org/extend/plugins/wp-seo-redirect-301") ?>
+<?php tom_add_social_share_links("http://wordpress.org/extend/plugins/wp-seo-redirect-301"); ?>

@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.6.1
+Version: 1.6.2
 Author: Tom Skroza
 License: GPL2
 */
@@ -53,8 +53,11 @@ function slt_theme_filter_404() {
     global $wpdb, $wp_query, $post;
     // Get the name of the current template. 
     $template_name = get_post_meta( $wp_query->post->ID, '_wp_page_template', true );
-    
-    if ( $wp_query->post->ID == "" && $template_name == "") { 
+
+    $acceptable_values = array("post", "page");
+
+    if (($wp_query->post->ID == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
+
        // Template is blank, which means page does not exist and is a 404. 
         $wp_query->is_404 = false;  
         $wp_query->is_archive = true;  
