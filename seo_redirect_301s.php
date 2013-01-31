@@ -57,7 +57,6 @@ function slt_theme_filter_404() {
     $acceptable_values = array("post", "page");
 
     if (($wp_query->post->ID == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
-
        // Template is blank, which means page does not exist and is a 404. 
         $wp_query->is_404 = false;  
         $wp_query->is_archive = true;  
@@ -67,8 +66,12 @@ function slt_theme_filter_404() {
 
        $table_name = $wpdb->prefix . "slug_history";
        $sql = "SELECT * FROM $table_name where post_id <> 0 AND url='".curPageURL()."/'";
-
        $row = $wpdb->get_row($sql);
+
+       if ($row->post_id == "") {
+        $sql = "SELECT * FROM $table_name where post_id <> 0 AND url='".curPageURL()."'";
+        $row = $wpdb->get_row($sql);
+       }
 
        $post_table = $wpdb->prefix."posts";
        $sql = "SELECT * FROM $post_table where ID = ".$row->post_id;
