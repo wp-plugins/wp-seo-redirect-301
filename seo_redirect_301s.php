@@ -101,7 +101,7 @@ function seo_redirect_301_activate() {
   global $wpdb;
   $table_name = $wpdb->prefix . "slug_history";
   $checktable = $wpdb->query("SHOW TABLES LIKE '$table_name'");
-  if (count($checktable) == 0) {
+  if ($checktable == 0) {
     $sql = "CREATE TABLE $table_name (
     post_id mediumint(9) NOT NULL,
     url VARCHAR(255) DEFAULT '' NOT NULL,
