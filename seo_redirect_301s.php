@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.6.3
+Version: 1.6.4
 Author: Tom Skroza
 License: GPL2
 */
@@ -33,10 +33,16 @@ function seo_redirect_save_current_slug( $postid ) {
   $post_table = $wpdb->prefix . "posts";
   $my_revision = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $post_table WHERE post_type='revision' AND id= %d", $postid) );
   $my_post = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $post_table WHERE post_type IN ('page', 'post') AND id=%d", $my_revision->post_parent) );
-  $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $my_post->ID, 'url' => get_permalink( $my_post->ID )) );
+  
+  if (($wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE post_id='%d' AND id= %d", $my_post->ID, get_permalink( $my_post->ID )))) == null) {
+    $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $my_post->ID, 'url' => get_permalink( $my_post->ID )));
+  }
+
   $child_pages = get_posts( array('post_type' => 'page','post_parent' => $my_post->ID,'orderby' => 'menu_order'));
   foreach ($child_pages as $child_page) {
-    $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $child_page->ID, 'url' => get_permalink( $child_page->ID )) );
+    if (($wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE post_id='%d' AND id= %d", $child_page->ID, get_permalink( $child_page->ID )))) == null) {
+      $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $child_page->ID, 'url' => get_permalink( $child_page->ID )) );
+    }
   }
 }
 
