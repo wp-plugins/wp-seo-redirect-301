@@ -98,14 +98,17 @@ function seo_redirect_slt_theme_filter_404() {
 }  
 
 function seo_redirect_301_activate() {
-   global $wpdb;
-   $table_name = $wpdb->prefix . "slug_history";
-   $sql = "CREATE TABLE $table_name (
-post_id mediumint(9) NOT NULL,
-url VARCHAR(255) DEFAULT '' NOT NULL,
-UNIQUE KEY post_id (post_id, url)
-);";
-  $wpdb->query($sql); 
+  global $wpdb;
+  $table_name = $wpdb->prefix . "slug_history";
+  $checktable = $wpdb->query("SHOW TABLES LIKE '$table_name'");
+  if (count($checktable) == 0) {
+    $sql = "CREATE TABLE $table_name (
+    post_id mediumint(9) NOT NULL,
+    url VARCHAR(255) DEFAULT '' NOT NULL,
+    UNIQUE KEY post_id (post_id, url)
+    );";
+    $wpdb->query($sql); 
+  }
 }
 register_activation_hook( __FILE__, 'seo_redirect_301_activate' );
 
