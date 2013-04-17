@@ -38,7 +38,7 @@ wp_enqueue_script('jquery');
 			    </tr>
 			  <?php } else { ?>
   			  <?php foreach($my_redirects as $redirect) { ?>
-  			    <?php if ((get_permalink($redirect->post_id) != "") && ($redirect->url != get_permalink($redirect->post_id))) { ?>
+  			    <?php if ((get_permalink($redirect->post_id) != "") && (preg_replace("/\/$/", "", $redirect->url) != preg_replace("/\/$/", "", get_permalink($redirect->post_id)))) { ?>
     			    <tr>
     			      <td><a target="_blank" href="<?php echo($redirect->url); ?>"><?php echo($redirect->url); ?></a></td>
     			      <td><strong style="margin: 0 10px;">redirects to</strong></td>
@@ -48,7 +48,6 @@ wp_enqueue_script('jquery');
     			  <?php } ?>
   			  <?php } ?>			    
 			  <?php } ?>
-
 
 			</tbody>
 		</table>
