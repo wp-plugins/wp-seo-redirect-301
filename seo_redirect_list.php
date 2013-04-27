@@ -1,15 +1,9 @@
 <?php
-
-global $wpdb;
-$table_name = $wpdb->prefix."slug_history";
-
 if (isset($_GET["delete_id"])) {
-  $sql = "DELETE FROM $table_name WHERE post_id=".$_GET["delete_id"]." AND url='".$_GET["delete_url"]."';";
-  $wpdb->query($sql);
+  tom_delete_record("slug_history", "post_id=".$_GET["delete_id"]." AND url='".$_GET["delete_url"]."'");
   wp_redirect("".get_option("siteurl")."/wp-admin/admin.php?page=wp-seo-redirect-301/seo_redirect_list.php", 200);
 }
-
-$my_redirects = $wpdb->get_results("SELECT * FROM $table_name");
+$my_redirects = tom_get_results("slug_history", "*", "");
 
 wp_enqueue_script('jquery');
 

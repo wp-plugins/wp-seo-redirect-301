@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.6.4
+Version: 1.7.1
 Author: Tom Skroza
 License: GPL2
 */
@@ -27,26 +27,27 @@ function register_seo_redirect_301_page() {
 }
 
 add_action( 'save_post', 'seo_redirect_save_current_slug' );
+// Save history of slugs/permalinks for the saved page and child pages.
 function seo_redirect_save_current_slug( $postid ) {
-  global $wpdb;
-  $table_name = $wpdb->prefix . "slug_history";  
-  $post_table = $wpdb->prefix . "posts";
-  $my_revision = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $post_table WHERE post_type='revision' AND id= %d", $postid) );
-  $my_post = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $post_table WHERE post_type IN ('page', 'post') AND id=%d", $my_revision->post_parent) );
-  
-  if (($wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE post_id='%d' AND id= %d", $my_post->ID, get_permalink( $my_post->ID )))) == null) {
-    $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $my_post->ID, 'url' => get_permalink( $my_post->ID )));
-  }
+  $my_revision = tom_get_row("posts", "*", "post_type='revision' AND ID=".$postid);
+  if ($my_revision != null) {
+    $my_post = tom_get_row("posts", "*", "post_type IN ('page', 'post') AND ID=".$my_revision->post_parent);
 
-  $child_pages = get_posts( array('post_type' => 'page','post_parent' => $my_post->ID,'orderby' => 'menu_order'));
-  foreach ($child_pages as $child_page) {
-    if (($wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE post_id='%d' AND id= %d", $child_page->ID, get_permalink( $child_page->ID )))) == null) {
-      $rows_affected = $wpdb->insert( $table_name, array( 'post_id' => $child_page->ID, 'url' => get_permalink( $child_page->ID )) );
+    if (tom_get_row("slug_history", "*", "post_id='".$my_post->ID."' AND url='".get_permalink( $my_post->ID )."'") == null) {
+      tom_insert_record("slug_history", array( 'post_id' => $my_post->ID, 'url' => get_permalink( $my_post->ID )));
     }
+
+    $child_pages = get_posts( array('post_type' => 'page','post_parent' => $my_post->ID,'orderby' => 'menu_order'));
+    foreach ($child_pages as $child_page) {
+      if (tom_get_row("slug_history", "*", "post_id='".$child_page->ID."' AND url='".get_permalink( $child_page->ID )."'") == null) {
+        tom_insert_record("slug_history", array( 'post_id' => $child_page->ID, 'url' => get_permalink( $child_page->ID )));
+      }
+    } 
   }
+  
 }
 
-
+// GET the current url.
 function seo_redirect_curl_page_url() {
  $pageURL = 'http';
  if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
@@ -56,14 +57,16 @@ function seo_redirect_curl_page_url() {
 }
 
 add_action( 'template_redirect', 'seo_redirect_slt_theme_filter_404', 0 );  
+// Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
     
-  global $wpdb, $wp_query, $post;
+  global $wp_query, $post;
   // Get the name of the current template. 
   $template_name = get_post_meta( $wp_query->post->ID, '_wp_page_template', true );
 
   $acceptable_values = array("post", "page");
 
+  // Check if page exists.
   if (($wp_query->post->ID == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
     // Template is blank, which means page does not exist and is a 404. 
     $wp_query->is_404 = false;  
@@ -72,25 +75,18 @@ function seo_redirect_slt_theme_filter_404() {
     $post = new stdClass();  
     $post->post_type = $wp_query->query['post_type']; 
 
-    $table_name = $wpdb->prefix . "slug_history";
-    $sql = "SELECT * FROM $table_name where post_id <> 0 AND url='".seo_redirect_curl_page_url()."/'";
-    $row = $wpdb->get_row($sql);
-
+    // Try to find record of a page with the current url.
+    $row = tom_get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."/'");
     if ($row->post_id == "") {
-      $sql = "SELECT * FROM $table_name where post_id <> 0 AND url='".seo_redirect_curl_page_url()."'";
-      $row = $wpdb->get_row($sql);
+      $row = tom_get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."'");
     }
 
     if ($row != null) {
-      $post_table = $wpdb->prefix."posts";
-      $sql = "SELECT * FROM $post_table where ID = ".$row->post_id;
-      $post_row = $wpdb->get_row($sql);
-
-      if ($post_row->post_type == "post") {
-        wp_redirect(get_option('siteurl')."/?p=".$row->post_id, 301);exit;
-      } else if ($post_row->post_type == "page") {
-        wp_redirect(get_option('siteurl')."/?page_id=".$row->post_id, 301);exit;
-      }       
+      // Record found, find id of old url, now use id to find current slug/permalink.
+      $post_row = tom_get_row("posts", "*", "ID=".$row->post_id);
+      wp_redirect(get_permalink($row->post_id),301);exit;     
+    } else {
+      // Continue as 404, we can't find the page so do nothing.
     }
 
   }  
