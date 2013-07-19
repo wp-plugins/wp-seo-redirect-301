@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.7.3
+Version: 1.7.4
 Author: Tom Skroza
 License: GPL2
 */
@@ -49,6 +49,7 @@ function seo_redirect_301_notice_notice(){
 
 add_action( 'admin_init', 'register_seo_redirect_301_install_dependency_settings' );
 function register_seo_redirect_301_install_dependency_settings() {
+
   if (isset($_GET["seo_redirect_301_install_dependency"])) {
     if (wp_verify_nonce($_REQUEST['_wpnonce'], "activate-seo-redirect-301-dependencies")) {
       switch ($_GET["seo_redirect_301_install_dependency"]) { 
@@ -98,18 +99,19 @@ function seo_redirect_curl_page_url() {
  return $pageURL;
 }
 
-add_action( 'template_redirect', 'seo_redirect_slt_theme_filter_404', 0 );  
+
+add_action('init', 'seo_redirect_slt_theme_filter_404');
 // Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
   if (are_seo_redirect_301_dependencies_installed()) {
 	  global $wp_query, $post;
 	  // Get the name of the current template. 
-	  $template_name = get_post_meta( $wp_query->post->ID, '_wp_page_template', true );
+	  $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
 
 	  $acceptable_values = array("post", "page");
 
 	  // Check if page exists.
-	  if (($wp_query->post->ID == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
+	  if ((get_the_id() == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
 	    // Template is blank, which means page does not exist and is a 404. 
 	    $wp_query->is_404 = false;  
 	    $wp_query->is_archive = true;  

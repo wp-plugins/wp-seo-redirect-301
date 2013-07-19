@@ -3,7 +3,7 @@ Contributors: MMDeveloper
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
 Tested up to: 3.5.1
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ WP-SEO-Redirect-301 is a WordPress plugin that remembers your old urls and redir
 
 Installation:
 
-1) Install WordPress 3.5.1 or higher
+1) Install WordPress 3.5.2 or higher
 
 2) Download the latest from:
 
@@ -32,6 +32,10 @@ Thats it, you don't need to worry, update your page urls and this plugin will re
 If you click on "SEO Redirect 301" menu link, you will see a list of old urls pointing to the new ones. Its here where you can delete ones you don't want anymore.
 
 == Changelog ==
+
+= 1.7.4 =
+
+* I noticed that SEO Redirect 301 didn't want to play nice with some paid themes. I've come up with a solution to SmartStart and the fix could potentially fix other themes that work closely with Wordpress Theme code. 
 
 = 1.7.3 =
 
@@ -91,6 +95,10 @@ If you click on "SEO Redirect 301" menu link, you will see a list of old urls po
 
 
 == Upgrade notice ==
+
+= 1.7.4 =
+
+* I noticed that SEO Redirect 301 didn't want to play nice with some paid themes. I've come up with a solution to SmartStart and the fix could potentially fix other themes that work closely with Wordpress Theme code. 
 
 = 1.7.3 =
 
