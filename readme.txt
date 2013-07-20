@@ -31,6 +31,10 @@ Thats it, you don't need to worry, update your page urls and this plugin will re
 
 If you click on "SEO Redirect 301" menu link, you will see a list of old urls pointing to the new ones. Its here where you can delete ones you don't want anymore.
 
+Since version 1.8.0, you can now create custom urls in your admin post/page edit page. Login to your wordpress site, go to any post/page and scroll down. You should find a Meta Box called SEO Redirect 301s. If you submit a url here and then browse to this url, it will redirect you to the page/post your editing.
+
+
+
 == Changelog ==
 
 = 1.8.0 =
