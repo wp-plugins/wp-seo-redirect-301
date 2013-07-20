@@ -170,7 +170,9 @@ function seo_redirect_inner_custom_box( $post ) {
   ?>
   <p>
     <label for="seo_redirect_url">Please submit a custom url that you want to use to redirect to this page:</label>
-    <?php echo(get_option("siteurl")); ?>/<input type="text" name="seo_redirect_url" id="seo_redirect_url" />
+    <span style="margin-left: 10px; background: #cac9c9; padding: 10px;">
+      <?php echo(get_option("siteurl")); ?>/<input type="text" name="seo_redirect_url" id="seo_redirect_url" />
+    </span>
   </p>
   <p>
     <input type="submit" name="action" value="Submit" />
