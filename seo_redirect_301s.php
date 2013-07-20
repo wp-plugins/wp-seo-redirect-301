@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.7.4
+Version: 1.8.0
 Author: Tom Skroza
 License: GPL2
 */
@@ -100,42 +100,137 @@ function seo_redirect_curl_page_url() {
 }
 
 
-add_action('init', 'seo_redirect_slt_theme_filter_404');
+add_action('wp', 'seo_redirect_slt_theme_filter_404');
 // Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
   if (are_seo_redirect_301_dependencies_installed()) {
-	  global $wp_query, $post;
-	  // Get the name of the current template. 
-	  $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
+    global $wp_query, $post;
+     // Get the name of the current template. 
+     $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
+  
+     $acceptable_values = array("post", "page");
 
-	  $acceptable_values = array("post", "page");
+     // Check if page exists.
+     if ((get_the_id() == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
 
-	  // Check if page exists.
-	  if ((get_the_id() == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
-	    // Template is blank, which means page does not exist and is a 404. 
-	    $wp_query->is_404 = false;  
-	    $wp_query->is_archive = true;  
-	    $wp_query->is_post_type_archive = true;  
-	    $post = new stdClass();  
-	    $post->post_type = $wp_query->query['post_type']; 
-
-	    // Try to find record of a page with the current url.
-	    $row = tom_get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."/'");
-	    if ($row->post_id == "") {
-	      $row = tom_get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."'");
-	    }
-
-	    if ($row != null) {
-	      // Record found, find id of old url, now use id to find current slug/permalink.
-	      $post_row = tom_get_row("posts", "*", "ID=".$row->post_id);
-	      wp_redirect(get_permalink($row->post_id),301);exit;     
-	    } else {
-	      // Continue as 404, we can't find the page so do nothing.
-	    }
-
-	  }  
+        // Template is blank, which means page does not exist and is a 404. 
+        $wp_query->is_404 = false;  
+        $wp_query->is_archive = true;  
+        $wp_query->is_post_type_archive = true;  
+        $post = new stdClass();  
+        $post->post_type = $wp_query->query['post_type']; 
+ 
+        // Try to find record of a page with the current url.
+        $row = tom_get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."/'");
+        if ($row->post_id == "") {
+          $row = tom_get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."'");
+        }
+ 
+        if ($row != null) {
+          // Record found, find id of old url, now use id to find current slug/permalink.
+          $post_row = tom_get_row("posts", "*", "ID=".$row->post_id);
+          wp_redirect(get_permalink($row->post_id),301);exit;     
+        } else {
+          // Continue as 404, we can't find the page so do nothing.
+        }
+     }  
   }           
 }  
+
+
+add_action( 'add_meta_boxes', 'seo_redirect_admin_page_widget_box' );
+function seo_redirect_admin_page_widget_box() {
+  
+  if (isset($_GET["delete_url"]) && isset($_GET["post"])) {
+    $record = tom_get_row("slug_history", array("post_id", "url"), "post_id=".$_GET["post"]."&url='".$_GET["delete_url"]."'");
+    // Check if slug history record exists
+    if ($record) {
+      // slug history record does exist so attempt to delete it.
+      tom_delete_record("slug_history", "post_id=".$_GET["post"]." AND url='".$_GET["delete_url"]."'");
+    }
+  }
+  
+  $screens = array( 'post', 'page' );
+  foreach ($screens as $screen) {
+      add_meta_box(
+          'seo_redirect_admin_widget_id',
+          __( 'SEO Redirect 301s', 'seo_redirect_url' ),
+          'seo_redirect_inner_custom_box',
+          $screen
+      );
+  }
+}
+
+/* Prints the box content */
+function seo_redirect_inner_custom_box( $post ) {
+  // Use nonce for verification
+  wp_nonce_field( plugin_basename( __FILE__ ), 'seo_redirect_noncename' );  
+  
+  $my_redirects = tom_get_results("slug_history", "*", "post_id=".$post->ID);
+  ?>
+  <p>
+    <label for="seo_redirect_url">Please submit a custom url that you want to use to redirect to this page:</label>
+    <?php echo(get_option("siteurl")); ?>/<input type="text" name="seo_redirect_url" id="seo_redirect_url" />
+  </p>
+  <p>
+    <input type="submit" name="action" value="Submit" />
+  </p>
+  <h4><span>These URLs redirect to this page</span></h4>
+  <table class="data">
+		<tbody>	
+		  <?php 
+				$record_count = 0;
+				foreach($my_redirects as $redirect) { ?>
+		    <?php if ((get_permalink($redirect->post_id) != "") && (preg_replace("/\/$/", "", $redirect->url) != preg_replace("/\/$/", "", get_permalink($redirect->post_id)))) { 
+					$record_count++;
+					?>
+			    <tr>
+			      <td><a target="_blank" href="<?php echo($redirect->url); ?>"><?php echo($redirect->url); ?></a></td>
+			      <td><a class="delete" href="<?php echo(get_option("siteurl")); ?>/wp-admin/post.php?post=<?php echo($redirect->post_id); ?>&action=edit&delete_url=<?php echo($redirect->url); ?>">Delete</a></td>
+			    </tr>
+			  <?php } ?>
+		  <?php } ?>			    
+		</tbody>
+		<?php if ($record_count == 0) { ?>
+			<tfoot>
+				<tr>
+					<td colspan="4">You haven't changed any page/post slug names yet.</td>
+				</tr>
+			</tfoot>	
+		<?php } ?>
+	</table>
+  <?php
+}
+
+/* Do something with the data entered */
+add_action( 'save_post', 'seo_redirect_save_postdata' );
+/* When the post is saved, saves our custom data */
+function seo_redirect_save_postdata( $post_id ) {
+
+  // First we need to check if the current user is authorised to do this action. 
+  if ( 'page' == $_REQUEST['post_type'] ) {
+    if ( ! current_user_can( 'edit_page', $post_id ) )
+        return;
+  } else {
+    if ( ! current_user_can( 'edit_post', $post_id ) )
+        return;
+  }
+
+  // Secondly we need to check if the user intended to change this value.
+  if ( ! isset( $_POST['seo_redirect_noncename'] ) || ! wp_verify_nonce( $_POST['seo_redirect_noncename'], plugin_basename( __FILE__ ) ) )
+      return;
+
+  // Thirdly we can save the value to the database
+
+  //if saving in a custom table, get post_ID
+  $post_ID = $_POST['post_ID'];
+  //sanitize user input
+  $redirect_url = get_option("siteurl")."/".sanitize_text_field( $_POST['seo_redirect_url'] );
+
+  tom_insert_record("slug_history", array("post_id" => $post_ID, "url" => $redirect_url));
+
+}
+
 
 function seo_redirect_301_activate() {
   global $wpdb;
