@@ -15,9 +15,9 @@ function register_seo_redirect_301_page() {
 }
 
 function are_seo_redirect_301_dependencies_installed() {
-	if (function_exists("is_plugin_active")) {
-		return is_plugin_active("tom-m8te/tom-m8te.php");
-	} 
+  if (function_exists("is_plugin_active")) {
+    return is_plugin_active("tom-m8te/tom-m8te.php");
+  } 
   return false;
 }
 
@@ -71,23 +71,23 @@ function register_seo_redirect_301_install_dependency_settings() {
 add_action( 'save_post', 'seo_redirect_save_current_slug' );
 // Save history of slugs/permalinks for the saved page and child pages.
 function seo_redirect_save_current_slug( $postid ) {
-	if (are_seo_redirect_301_dependencies_installed()) {
-	  $my_revision = tom_get_row("posts", "*", "post_type='revision' AND ID=".$postid);
-	  if ($my_revision != null) {
-	    $my_post = tom_get_row("posts", "*", "post_type IN ('page', 'post') AND ID=".$my_revision->post_parent);
+  if (are_seo_redirect_301_dependencies_installed()) {
+    $my_revision = tom_get_row("posts", "*", "post_type='revision' AND ID=".$postid);
+    if ($my_revision != null) {
+      $my_post = tom_get_row("posts", "*", "post_type IN ('page', 'post') AND ID=".$my_revision->post_parent);
 
-	    if (tom_get_row("slug_history", "*", "post_id='".$my_post->ID."' AND url='".get_permalink( $my_post->ID )."'") == null) {
-	      tom_insert_record("slug_history", array( 'post_id' => $my_post->ID, 'url' => get_permalink( $my_post->ID )));
-	    }
+      if (tom_get_row("slug_history", "*", "post_id='".$my_post->ID."' AND url='".get_permalink( $my_post->ID )."'") == null) {
+        tom_insert_record("slug_history", array( 'post_id' => $my_post->ID, 'url' => get_permalink( $my_post->ID )));
+      }
 
-	    $child_pages = get_posts( array('post_type' => 'page','post_parent' => $my_post->ID,'orderby' => 'menu_order'));
-	    foreach ($child_pages as $child_page) {
-	      if (tom_get_row("slug_history", "*", "post_id='".$child_page->ID."' AND url='".get_permalink( $child_page->ID )."'") == null) {
-	        tom_insert_record("slug_history", array( 'post_id' => $child_page->ID, 'url' => get_permalink( $child_page->ID )));
-	      }
-	    } 
-	  }
-	}  
+      $child_pages = get_posts( array('post_type' => 'page','post_parent' => $my_post->ID,'orderby' => 'menu_order'));
+      foreach ($child_pages as $child_page) {
+        if (tom_get_row("slug_history", "*", "post_id='".$child_page->ID."' AND url='".get_permalink( $child_page->ID )."'") == null) {
+          tom_insert_record("slug_history", array( 'post_id' => $child_page->ID, 'url' => get_permalink( $child_page->ID )));
+        }
+      } 
+    }
+  }  
 }
 
 // GET the current url.
@@ -163,74 +163,76 @@ function seo_redirect_admin_page_widget_box() {
 
 /* Prints the box content */
 function seo_redirect_inner_custom_box( $post ) {
-  // Use nonce for verification
-  wp_nonce_field( plugin_basename( __FILE__ ), 'seo_redirect_noncename' );  
-  
-  $my_redirects = tom_get_results("slug_history", "*", "post_id=".$post->ID);
-  ?>
-  <p>
-    <label for="seo_redirect_url">Please submit a custom url that you want to use to redirect to this page:</label>
-    <span style="margin-left: 10px; background: #cac9c9; padding: 10px;">
-      <?php echo(get_option("siteurl")); ?>/<input type="text" name="seo_redirect_url" id="seo_redirect_url" />
-    </span>
-  </p>
-  <p>
-    <input type="submit" name="action" value="Submit" />
-  </p>
-  <h4><span>These URLs redirect to this page</span></h4>
-  <table class="data">
-		<tbody>	
-		  <?php 
-				$record_count = 0;
-				foreach($my_redirects as $redirect) { ?>
-		    <?php if ((get_permalink($redirect->post_id) != "") && (preg_replace("/\/$/", "", $redirect->url) != preg_replace("/\/$/", "", get_permalink($redirect->post_id)))) { 
-					$record_count++;
-					?>
-			    <tr>
-			      <td><a target="_blank" href="<?php echo($redirect->url); ?>"><?php echo($redirect->url); ?></a></td>
-			      <td><a class="delete" href="<?php echo(get_option("siteurl")); ?>/wp-admin/post.php?post=<?php echo($redirect->post_id); ?>&action=edit&delete_url=<?php echo($redirect->url); ?>">Delete</a></td>
-			    </tr>
-			  <?php } ?>
-		  <?php } ?>			    
-		</tbody>
-		<?php if ($record_count == 0) { ?>
-			<tfoot>
-				<tr>
-					<td colspan="4">You haven't changed any page/post slug names yet.</td>
-				</tr>
-			</tfoot>	
-		<?php } ?>
-	</table>
-  <?php
+  if (are_seo_redirect_301_dependencies_installed()) {
+    // Use nonce for verification
+    wp_nonce_field( plugin_basename( __FILE__ ), 'seo_redirect_noncename' );  
+    
+    $my_redirects = tom_get_results("slug_history", "*", "post_id=".$post->ID);
+    ?>
+    <p>
+      <label for="seo_redirect_url">Please submit a custom url that you want to use to redirect to this page:</label>
+      <span style="margin-left: 10px; background: #cac9c9; padding: 10px;">
+        <?php echo(get_option("siteurl")); ?>/<input type="text" name="seo_redirect_url" id="seo_redirect_url" />
+      </span>
+    </p>
+    <p>
+      <input type="submit" name="action" value="Submit" />
+    </p>
+    <h4><span>These URLs redirect to this page</span></h4>
+    <table class="data">
+      <tbody> 
+        <?php 
+          $record_count = 0;
+          foreach($my_redirects as $redirect) { ?>
+          <?php if ((get_permalink($redirect->post_id) != "") && (preg_replace("/\/$/", "", $redirect->url) != preg_replace("/\/$/", "", get_permalink($redirect->post_id)))) { 
+            $record_count++;
+            ?>
+            <tr>
+              <td><a target="_blank" href="<?php echo($redirect->url); ?>"><?php echo($redirect->url); ?></a></td>
+              <td><a class="delete" href="<?php echo(get_option("siteurl")); ?>/wp-admin/post.php?post=<?php echo($redirect->post_id); ?>&action=edit&delete_url=<?php echo($redirect->url); ?>">Delete</a></td>
+            </tr>
+          <?php } ?>
+        <?php } ?>          
+      </tbody>
+      <?php if ($record_count == 0) { ?>
+        <tfoot>
+          <tr>
+            <td colspan="4">You haven't changed the page/post slug names or created a custom url yet.</td>
+          </tr>
+        </tfoot>  
+      <?php } ?>
+    </table>
+    <?php
+  }
 }
 
 /* Do something with the data entered */
 add_action( 'save_post', 'seo_redirect_save_postdata' );
 /* When the post is saved, saves our custom data */
 function seo_redirect_save_postdata( $post_id ) {
+  if (are_seo_redirect_301_dependencies_installed()) {
+    // First we need to check if the current user is authorised to do this action. 
+    if ( 'page' == $_REQUEST['post_type'] ) {
+      if ( ! current_user_can( 'edit_page', $post_id ) )
+          return;
+    } else {
+      if ( ! current_user_can( 'edit_post', $post_id ) )
+          return;
+    }
 
-  // First we need to check if the current user is authorised to do this action. 
-  if ( 'page' == $_REQUEST['post_type'] ) {
-    if ( ! current_user_can( 'edit_page', $post_id ) )
+    // Secondly we need to check if the user intended to change this value.
+    if ( ! isset( $_POST['seo_redirect_noncename'] ) || ! wp_verify_nonce( $_POST['seo_redirect_noncename'], plugin_basename( __FILE__ ) ) )
         return;
-  } else {
-    if ( ! current_user_can( 'edit_post', $post_id ) )
-        return;
+
+    // Thirdly we can save the value to the database
+
+    //if saving in a custom table, get post_ID
+    $post_ID = $_POST['post_ID'];
+    //sanitize user input
+    $redirect_url = get_option("siteurl")."/".sanitize_text_field( $_POST['seo_redirect_url'] );
+
+    tom_insert_record("slug_history", array("post_id" => $post_ID, "url" => $redirect_url));
   }
-
-  // Secondly we need to check if the user intended to change this value.
-  if ( ! isset( $_POST['seo_redirect_noncename'] ) || ! wp_verify_nonce( $_POST['seo_redirect_noncename'], plugin_basename( __FILE__ ) ) )
-      return;
-
-  // Thirdly we can save the value to the database
-
-  //if saving in a custom table, get post_ID
-  $post_ID = $_POST['post_ID'];
-  //sanitize user input
-  $redirect_url = get_option("siteurl")."/".sanitize_text_field( $_POST['seo_redirect_url'] );
-
-  tom_insert_record("slug_history", array("post_id" => $post_ID, "url" => $redirect_url));
-
 }
 
 
