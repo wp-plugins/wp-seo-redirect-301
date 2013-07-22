@@ -99,8 +99,10 @@ function seo_redirect_curl_page_url() {
  return $pageURL;
 }
 
+if (isset($_GET["post"])) {
+  add_action('wp', 'seo_redirect_slt_theme_filter_404');  
+}
 
-add_action('wp', 'seo_redirect_slt_theme_filter_404');
 // Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
   if (are_seo_redirect_301_dependencies_installed()) {
@@ -170,13 +172,10 @@ function seo_redirect_inner_custom_box( $post ) {
     $my_redirects = tom_get_results("slug_history", "*", "post_id=".$post->ID);
     ?>
     <p>
-      <label for="seo_redirect_url">Please submit a custom url that you want to use to redirect to this page:</label>
+      <label for="seo_redirect_url">Please type in a custom url that you want to use to redirect to this page, then press the Enter/Return Key:</label>
       <span style="margin-left: 10px; background: #cac9c9; padding: 10px;">
         <?php echo(get_option("siteurl")); ?>/<input type="text" name="seo_redirect_url" id="seo_redirect_url" />
       </span>
-    </p>
-    <p>
-      <input type="submit" name="action" value="Submit" />
     </p>
     <h4><span>These URLs redirect to this page</span></h4>
     <table class="data">
