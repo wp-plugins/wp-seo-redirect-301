@@ -228,7 +228,9 @@ function seo_redirect_save_postdata( $post_id ) {
     //sanitize user input
     $redirect_url = get_option("siteurl")."/".sanitize_text_field( $_POST['seo_redirect_url'] );
 
-    tom_insert_record("slug_history", array("post_id" => $post_ID, "url" => $redirect_url));
+    if ($_POST['seo_redirect_url'] != "") {
+      tom_insert_record("slug_history", array("post_id" => $post_ID, "url" => $redirect_url));
+    }
   }
 }
 
