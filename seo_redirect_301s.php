@@ -99,10 +99,7 @@ function seo_redirect_curl_page_url() {
  return $pageURL;
 }
 
-if (isset($_GET["post"])) {
-  add_action('wp', 'seo_redirect_slt_theme_filter_404');  
-}
-
+add_action('wp', 'seo_redirect_slt_theme_filter_404');  
 // Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
   if (are_seo_redirect_301_dependencies_installed()) {
@@ -139,8 +136,9 @@ function seo_redirect_slt_theme_filter_404() {
   }           
 }  
 
-
-add_action( 'add_meta_boxes', 'seo_redirect_admin_page_widget_box' );
+if (isset($_GET["post"]) && $_GET["post"] != "") {
+  add_action( 'add_meta_boxes', 'seo_redirect_admin_page_widget_box' );
+}
 function seo_redirect_admin_page_widget_box() {
   
   if (isset($_GET["delete_url"]) && isset($_GET["post"])) {
