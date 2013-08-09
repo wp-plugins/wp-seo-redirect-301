@@ -99,7 +99,7 @@ function seo_redirect_curl_page_url() {
  return $pageURL;
 }
 
-add_action('wp', 'seo_redirect_slt_theme_filter_404');  
+add_action('shutdown', 'seo_redirect_slt_theme_filter_404');  
 // Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
   if (are_seo_redirect_301_dependencies_installed()) {
