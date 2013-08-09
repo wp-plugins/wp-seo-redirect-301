@@ -2,8 +2,8 @@
 Contributors: MMDeveloper
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
-Tested up to: 3.5.1
-Stable tag: 1.8.0
+Tested up to: 3.6
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ WP-SEO-Redirect-301 is a WordPress plugin that remembers your old urls and redir
 
 Installation:
 
-1) Install WordPress 3.5.2 or higher
+1) Install WordPress 3.6 or higher
 
 2) Download the latest from:
 
@@ -36,6 +36,10 @@ Since version 1.8.0, you can now create custom urls in your admin post/page edit
 
 
 == Changelog ==
+
+= 1.8.1 =
+
+* I think I may have fixed template conflictions once and for all. I've placed the redirect on the shutdown event which is the last wordpress event that executes. I think before it tried to redirect before all other code could execute, breaking most templates. Now that this executes on the last event, I think it should create less template issues.
 
 = 1.8.0 =
 
@@ -103,6 +107,10 @@ Since version 1.8.0, you can now create custom urls in your admin post/page edit
 
 
 == Upgrade notice ==
+
+= 1.8.1 =
+
+* I think I may have fixed template conflictions once and for all. I've placed the redirect on the shutdown event which is the last wordpress event that executes. I think before it tried to redirect before all other code could execute, breaking most templates. Now that this executes on the last event, I think it should create less template issues.
 
 = 1.8.0 =
 
