@@ -267,21 +267,23 @@ add_action( 'seo_redirect_301_daily_event', 'seo_redirect_301_do_this_daily' );
  * On the scheduled action hook, run a function.
  */
 function seo_redirect_301_do_this_daily() {
-  $my_redirects = tom_get_results("slug_history", "*", "");
-  $content = "<?xml version='1.0' encoding='UTF-8'?><urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'>";
-    foreach ($my_redirects as $redirect) {
-      if ($redirect->url != "") {
-        $content .= 
-        "<url> 
-          <loc>".$redirect->url."</loc>
-          <lastmod>".gmdate( 'Y-m-d H:i:s')."</lastmod> 
-          <changefreq>daily</changefreq> 
-          <priority>0.6</priority> 
-        </url>";
+  if (function_exists("tom_write_to_file")) {
+    $my_redirects = tom_get_results("slug_history", "*", "");
+    $content = "<?xml version='1.0' encoding='UTF-8'?><urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'>";
+      foreach ($my_redirects as $redirect) {
+        if ($redirect->url != "") {
+          $content .= 
+          "<url> 
+            <loc>".$redirect->url."</loc>
+            <lastmod>".gmdate( 'Y-m-d H:i:s')."</lastmod> 
+            <changefreq>daily</changefreq> 
+            <priority>0.6</priority> 
+          </url>";
+        }
       }
-    }
-  $content .= "</urlset>";
-  tom_write_to_file($content, ABSPATH."/301-sitemap.xml");
+    $content .= "</urlset>";
+    tom_write_to_file($content, ABSPATH."/301-sitemap.xml");
+  }
 }
 
 
