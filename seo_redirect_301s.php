@@ -3,10 +3,25 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.8.2
+Version: 1.9
 Author: Tom Skroza
 License: GPL2
 */
+
+function seo_redirect_301_activate() {
+  global $wpdb;
+  $table_name = $wpdb->prefix . "slug_history";
+  $checktable = $wpdb->query("SHOW TABLES LIKE '$table_name'");
+  if ($checktable == 0) {
+    $sql = "CREATE TABLE $table_name (
+    post_id mediumint(9) NOT NULL,
+    url VARCHAR(255) DEFAULT '' NOT NULL,
+    UNIQUE KEY post_id (post_id, url)
+    );";
+    $wpdb->query($sql); 
+  }
+}
+register_activation_hook( __FILE__, 'seo_redirect_301_activate' );
 
 add_action('admin_menu', 'register_seo_redirect_301_page');
 
@@ -49,7 +64,12 @@ function seo_redirect_301_notice_notice(){
 
 add_action( 'admin_init', 'register_seo_redirect_301_install_dependency_settings' );
 function register_seo_redirect_301_install_dependency_settings() {
-
+  // Check to see if file exists.
+  if (!file_exists(ABSPATH."/301-sitemap.xml")) {
+    // File does not exist, so create file.
+    seo_redirect_301_do_this_daily(); 
+  }
+  
   if (isset($_GET["seo_redirect_301_install_dependency"])) {
     if (wp_verify_nonce($_REQUEST['_wpnonce'], "activate-seo-redirect-301-dependencies")) {
       switch ($_GET["seo_redirect_301_install_dependency"]) { 
@@ -231,19 +251,38 @@ function seo_redirect_save_postdata( $post_id ) {
 }
 
 
-function seo_redirect_301_activate() {
-  global $wpdb;
-  $table_name = $wpdb->prefix . "slug_history";
-  $checktable = $wpdb->query("SHOW TABLES LIKE '$table_name'");
-  if ($checktable == 0) {
-    $sql = "CREATE TABLE $table_name (
-    post_id mediumint(9) NOT NULL,
-    url VARCHAR(255) DEFAULT '' NOT NULL,
-    UNIQUE KEY post_id (post_id, url)
-    );";
-    $wpdb->query($sql); 
+add_action( 'wp', 'seo_redirect_301_setup_schedule' );
+/**
+ * On an early action hook, check if the hook is scheduled - if not, schedule it.
+ */
+function seo_redirect_301_setup_schedule() {
+  if ( ! wp_next_scheduled( 'seo_redirect_301_daily_event' ) ) {
+    wp_schedule_event( time(), 'daily', 'seo_redirect_301_daily_event');
   }
 }
-register_activation_hook( __FILE__, 'seo_redirect_301_activate' );
+
+
+add_action( 'seo_redirect_301_daily_event', 'seo_redirect_301_do_this_daily' );
+/**
+ * On the scheduled action hook, run a function.
+ */
+function seo_redirect_301_do_this_daily() {
+  $my_redirects = tom_get_results("slug_history", "*", "");
+  $content = "<?xml version='1.0' encoding='UTF-8'?><urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'>";
+    foreach ($my_redirects as $redirect) {
+      if ($redirect->url != "") {
+        $content .= 
+        "<url> 
+          <loc>".$redirect->url."</loc>
+          <lastmod>".gmdate( 'Y-m-d H:i:s')."</lastmod> 
+          <changefreq>daily</changefreq> 
+          <priority>0.6</priority> 
+        </url>";
+      }
+    }
+  $content .= "</urlset>";
+  tom_write_to_file($content, ABSPATH."/301-sitemap.xml");
+}
+
 
 ?>

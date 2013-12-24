@@ -9,17 +9,15 @@
 
 	?>
 
-	<script language="javascript">
-	  jQuery(function() {
-	    jQuery("a.delete").click(function() {
-	      if (!confirm("Are you sure?")) {
-	        return false;
-	      }
-	    });
-	  });
-	</script>
-
 	<h2>SEO Redirect 301</h2>
+	<div class="postbox " style="display: block; ">
+	<div class="inside">
+		<p>A daily SEO 301 Redirect Sitemap will get generated daily at this url:</p>
+		<p><a target="_blank" href="<?php echo(get_option("siteurl")); ?>/301-sitemap.xml"><?php echo(get_option("siteurl")); ?>/301-sitemap.xml</a></p>
+		<p>Please submit this sitemap to <a href="https://www.google.com/webmasters/tools/home?hl=en" target="_blank">Google</a> and <a href="http://bing.com/webmaster/WebmasterManageSitesPage.aspx" target="_blank">Bing</a>.</p>
+	</div>
+	</div>
+
 	<div class="postbox " style="display: block; ">
 	<div class="inside">
 			<table class="data">
