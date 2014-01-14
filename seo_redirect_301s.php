@@ -278,7 +278,7 @@ function seo_redirect_301_do_this_daily() {
           $content .= 
           "<url> 
             <loc>".$the_url."</loc>
-            <lastmod>".gmdate( 'Y-m-d H:i:s')."</lastmod> 
+            <lastmod>".gmdate( 'Y-m-d')."T".gmdate( 'H:i')."+00:00</lastmod> 
             <changefreq>daily</changefreq> 
             <priority>0.6</priority> 
           </url>";
