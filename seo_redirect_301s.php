@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 1.9
+Version: 1.9.1
 Author: Tom Skroza
 License: GPL2
 */
@@ -64,8 +64,10 @@ function seo_redirect_301_notice_notice(){
 
 add_action( 'admin_init', 'register_seo_redirect_301_install_dependency_settings' );
 function register_seo_redirect_301_install_dependency_settings() {
+
   // Check to see if file exists.
   if (!file_exists(ABSPATH."/301-sitemap.xml")) {
+
     // File does not exist, so create file.
     seo_redirect_301_do_this_daily(); 
   }
@@ -271,10 +273,11 @@ function seo_redirect_301_do_this_daily() {
     $my_redirects = tom_get_results("slug_history", "*", "");
     $content = "<?xml version='1.0' encoding='UTF-8'?><urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'>";
       foreach ($my_redirects as $redirect) {
-        if ($redirect->url != "") {
+        $the_url = preg_replace("/\?(.+)*/", "", $redirect->url);
+        if ($the_url != "" && $the_url != get_option("siteurl") && $the_url != get_option("siteurl")."/") {
           $content .= 
           "<url> 
-            <loc>".$redirect->url."</loc>
+            <loc>".$the_url."</loc>
             <lastmod>".gmdate( 'Y-m-d H:i:s')."</lastmod> 
             <changefreq>daily</changefreq> 
             <priority>0.6</priority> 

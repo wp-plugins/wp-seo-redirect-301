@@ -3,7 +3,7 @@ Contributors: MMDeveloper
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
 Tested up to: 3.6
-Stable tag: 1.9
+Stable tag: 1.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,10 @@ Since version 1.8.0, you can now create custom urls in your admin post/page edit
 
 
 == Changelog ==
+
+= 1.9.1 =
+
+* Noticed an issue where url has a query string. The fix is to remove query strings from the urls.
 
 = 1.9 =
 
@@ -116,6 +120,10 @@ Since version 1.8.0, you can now create custom urls in your admin post/page edit
 
 
 == Upgrade notice ==
+
+= 1.9.1 =
+
+* Noticed an issue where url has a query string. The fix is to remove query strings from the urls.
 
 = 1.9 =
 
