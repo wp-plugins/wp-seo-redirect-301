@@ -33,6 +33,12 @@ function register_seo_redirect_301_page() {
    add_menu_page('SEO Redirect 301', 'SEO Redirect 301', 'manage_options', 'wp-seo-redirect-301/seo_redirect_list.php', '',  '', 180);
 }
 
+add_action("admin_init", "seo_redirect_301_register_style_scripts");
+function seo_redirect_301_register_style_scripts() {
+  wp_register_style("seo-301-redirect", plugins_url("/css/style.css", __FILE__));
+  wp_enqueue_style("seo-301-redirect");
+}
+
 add_action( 'admin_init', 'register_seo_redirect_301_install_dependency_settings' );
 function register_seo_redirect_301_install_dependency_settings() {
 
