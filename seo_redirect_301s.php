@@ -42,23 +42,7 @@ function register_seo_redirect_301_install_dependency_settings() {
     // File does not exist, so create file.
     seo_redirect_301_do_this_daily(); 
   }
-  
-  if (isset($_GET["seo_redirect_301_install_dependency"])) {
-    if (wp_verify_nonce($_REQUEST['_wpnonce'], "activate-seo-redirect-301-dependencies")) {
-      switch ($_GET["seo_redirect_301_install_dependency"]) { 
-        case 'tom-m8te':  
-          activate_plugin('tom-m8te/tom-m8te.php', 'plugins.php?error=false&plugin=tom-m8te.php');
-          wp_redirect(get_option("siteurl")."/wp-admin/admin.php?page=wp-seo-redirect-301/seo_redirect_list.php");
-          exit();
-          break;   
-        default:
-          throw new Exception("Sorry unable to install plugin.");
-          break;
-      }
-    } else {
-      die("Security Check Failed.");
-    }
-  }
+
 }
 
 add_action( 'save_post', 'seo_redirect_save_current_slug' );
