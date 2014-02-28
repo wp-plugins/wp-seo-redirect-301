@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 2.0.0
+Version: 2.0.1
 Author: Tom Skroza
 License: GPL2
 */

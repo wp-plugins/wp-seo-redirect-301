@@ -10,9 +10,9 @@ if (!class_exists("TomM8")) {
     // Creates a share website link for Facebook and Twitter.
     function add_social_share_links($url) {
       ?>
-      <a title="Share On Facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo($url); ?>"><img style="width: 30px;" src="<?php echo(get_option("siteurl")); ?>/wp-content/plugins/tom-m8te/images/facebook.jpg" style="width: 30px;" /></a>
-      <a title="Share On Twitter" target="_blank" href="http://twitter.com/intent/tweet?url=<?php echo($url); ?>"><img style="width: 30px;" src="<?php echo(get_option("siteurl")); ?>/wp-content/plugins/tom-m8te/images/twitter.jpg" style="width: 30px;" /></a>
-      <a title="Rate it 5 Star" target="_blank" href="<?php echo($url); ?>"><img style="padding-bottom: 3px;" src="<?php echo(get_option("siteurl")); ?>/wp-content/plugins/tom-m8te/images/rate-me.png" /></a>
+      <a title="Share On Facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo($url); ?>"><img style="width: 30px;" src="<?php echo(get_option("siteurl")); ?>/wp-content/plugins/wp-seo-redirect-301/images/facebook.jpg" style="width: 30px;" /></a>
+      <a title="Share On Twitter" target="_blank" href="http://twitter.com/intent/tweet?url=<?php echo($url); ?>"><img style="width: 30px;" src="<?php echo(get_option("siteurl")); ?>/wp-content/plugins/wp-seo-redirect-301/images/twitter.jpg" style="width: 30px;" /></a>
+      <a title="Rate it 5 Star" target="_blank" href="<?php echo($url); ?>"><img style="padding-bottom: 3px;" src="<?php echo(get_option("siteurl")); ?>/wp-content/plugins/wp-seo-redirect-301/images/rate-me.png" /></a>
       
       <?php
     }
@@ -797,8 +797,8 @@ if (!class_exists("TomM8")) {
       } else if ($field_type == "placeholder_textarea") {
         echo("<textarea id='$field_id_with_without_index' name='$field_name_with_without_array' ".$field_content." placeholder='".strip_tags($field_label)."'>".$field_value."</textarea>");
       } else if ($field_type == "captcha") {
-        echo("<img id='$field_id_with_without_index' src='".get_option("siteurl")."/wp-content/plugins/tom-m8te/securimage/securimage_show.php' />");
-        echo("<a href='#' onclick=\"document.getElementById('".$field_id_with_without_index."').src = '".get_option("siteurl")."/wp-content/plugins/tom-m8te/securimage/securimage_show.php?' + Math.random(); return false\">[ Different Image ]</a><input type='text' name='".$field_name."' size='10' maxlength='6' />");
+        echo("<img id='$field_id_with_without_index' src='".get_option("siteurl")."/wp-content/plugins/wp-seo-redirect-301/securimage/securimage_show.php' />");
+        echo("<a href='#' onclick=\"document.getElementById('".$field_id_with_without_index."').src = '".get_option("siteurl")."/wp-content/plugins/wp-seo-redirect-301/securimage/securimage_show.php?' + Math.random(); return false\">[ Different Image ]</a><input type='text' name='".$field_name."' size='10' maxlength='6' />");
       } else if ($field_type == "select") {
         echo("<select id='$field_id_with_without_index' name='$field_name_with_without_array' ".$field_content.">");
         foreach($value_options as $key => $option) {
