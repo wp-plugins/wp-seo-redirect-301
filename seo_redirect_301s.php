@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 2.0.1
+Version: 2.0.2
 Author: Tom Skroza
 License: GPL2
 */
@@ -87,31 +87,30 @@ add_action('template_redirect', 'seo_redirect_slt_theme_filter_404');
 function seo_redirect_slt_theme_filter_404() {  
   
   global $wp_query, $post;
-   // Get the name of the current template. 
-   $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
+  // Get the name of the current template. 
+  $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
+  
+  // Check if page exists.
+  if (($template_name == "")) { 
 
-   $acceptable_values = array("post", "page");
+    // Template is blank, which means page does not exist and is a 404. 
 
-   // Check if page exists.
-   if ((get_the_id() == "" && $template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values)) { 
+    // Try to find record of a page with the current url.
+    $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."/'");
+    if ($row->post_id == "") {
+      $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."'");
+    }
 
-      // Template is blank, which means page does not exist and is a 404. 
-
-      // Try to find record of a page with the current url.
-      $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."/'");
-      if ($row->post_id == "") {
-        $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."'");
-      }
-
-      if ($row != null) {
-        // Record found, find id of old url, now use id to find current slug/permalink.
-        $post_row = TomM8::get_row("posts", "*", "ID=".$row->post_id);
-        wp_redirect(get_permalink($row->post_id),301);exit;
-      } else {
-        // Continue as 404, we can't find the page so do nothing.
-      }
-   }  
-          
+    if ($row != null) {
+      // Record found, find id of old url, now use id to find current slug/permalink.
+      $post_row = TomM8::get_row("posts", "*", "ID=".$row->post_id);
+      wp_redirect(get_permalink($row->post_id),301);exit;
+    } else {
+      // Continue as 404, we can't find the page so do nothing.
+    }
+    
+  }  
+        
 }  
 
 if (isset($_GET["post"]) && $_GET["post"] != "") {
