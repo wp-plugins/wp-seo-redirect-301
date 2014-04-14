@@ -89,9 +89,25 @@ function seo_redirect_slt_theme_filter_404() {
   global $wp_query, $post;
   // Get the name of the current template. 
   $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
-  
+
+  $post_template_name = "";
+  $page_slug = str_replace(get_option("siteurl"), "", TomM8::get_current_url());
+  $page_slug = preg_replace("/\?(.+)*$/", "", $page_slug);
+  $args=array(
+    'name' => $page_slug,
+    'post_type' => 'post',
+    'post_status' => 'publish',
+    'numberposts' => 1
+  );
+  $my_posts = get_posts($args);
+  if( $my_posts ) {
+    if ($my_posts[0]->ID != "") {
+      $post_template_name = $my_posts[0]->ID;
+    }
+  }
+
   // Check if page exists.
-  if (($template_name == "")) { 
+  if (($template_name == "" && $post_template_name == "")) { 
 
     // Template is blank, which means page does not exist and is a 404. 
 
@@ -108,9 +124,8 @@ function seo_redirect_slt_theme_filter_404() {
     } else {
       // Continue as 404, we can't find the page so do nothing.
     }
-    
   }  
-        
+          
 }  
 
 if (isset($_GET["post"]) && $_GET["post"] != "") {
