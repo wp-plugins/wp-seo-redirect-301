@@ -2,7 +2,7 @@
 Contributors: MMDeveloper
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,7 +14,7 @@ WP-SEO-Redirect-301 is a WordPress plugin that remembers your old urls and redir
 
 Installation:
 
-1) Install WordPress 3.8 or higher
+1) Install WordPress 3.9 or higher
 
 2) Download the latest from:
 
