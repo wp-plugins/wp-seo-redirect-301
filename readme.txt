@@ -3,7 +3,7 @@ Contributors: MMDeveloper
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
 Tested up to: 3.9
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,10 @@ Since version 1.8.0, you can now create custom urls in your admin post/page edit
 
 
 == Changelog ==
+
+= 2.0.5 =
+
+* Don't re redirect to same url even if at some point it had changed. This to prevent endless redirects.
 
 = 2.0.4 =
 
@@ -134,6 +138,10 @@ Since version 1.8.0, you can now create custom urls in your admin post/page edit
 
 
 == Upgrade notice ==
+
+= 2.0.5 =
+
+* Don't re redirect to same url even if at some point it had changed. This to prevent endless redirects.
 
 = 2.0.4 =
 

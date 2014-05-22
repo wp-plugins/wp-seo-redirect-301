@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 2.0.4
+Version: 2.0.5
 Author: Tom Skroza
 License: GPL2
 */
@@ -124,7 +124,13 @@ function seo_redirect_slt_theme_filter_404() {
       if ($row != null) {
         // Record found, find id of old url, now use id to find current slug/permalink.
         $post_row = TomM8::get_row("posts", "*", "ID=".$row->post_id);
-        wp_redirect(get_permalink($row->post_id),301);exit;
+        // Test to see if url is still the current url.
+        if (TomM8::get_current_url() != get_permalink($row->post_id)) {
+          // The url isn't current, so redirect.
+          wp_redirect(get_permalink($row->post_id),301);exit;
+        } else {
+          // url is still current so therefore, don't render 404 page.
+        }
       } else {
         // Continue as 404, we can't find the page so do nothing.
       }
