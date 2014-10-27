@@ -34,7 +34,7 @@ Since version 1.9, you now get a sitemap that you can submit to google and bing.
 Since version 1.8.0, you can now create custom urls in your admin post/page edit page. Login to your wordpress site, go to any post/page and scroll down. You should find a Meta Box called SEO Redirect 301s. If you submit a url here and then browse to this url, it will redirect you to the page/post your editing.
 
 
-Built for The Marketing Mix Perth: http://www.marketingmix.com.au
+Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 
 
 == Changelog ==
