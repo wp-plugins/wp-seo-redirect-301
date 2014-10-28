@@ -12,7 +12,16 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 WP-SEO-Redirect-301 is a WordPress plugin that remembers your old urls and redirects users to the updated url, to prevent 404s when urls change
 
-Installation:
+If you click on "SEO Redirect 301" menu link, you will see a list of old urls pointing to the new ones. Its here where you can delete ones you don't want anymore.
+
+Since version 1.9, you now get a sitemap that you can submit to google and bing. After installing the plugin, you can submit http://yoursite/301-sitemap.xml to google or bing.
+
+Since version 1.8.0, you can now create custom urls in your admin post/page edit page. Login to your wordpress site, go to any post/page and scroll down. You should find a Meta Box called SEO Redirect 301s. If you submit a url here and then browse to this url, it will redirect you to the page/post your editing.
+
+Built by The Marketing Mix Perth: http://www.marketingmix.com.au
+
+
+== Installation ==
 
 1) Install WordPress 4.0 or higher
 
@@ -26,12 +35,6 @@ http://wordpress.org/extend/plugins/wp-seo-redirect-301
 
 
 Thats it, you don't need to worry, update your page urls and this plugin will redirect your users to the updated url.
-
-If you click on "SEO Redirect 301" menu link, you will see a list of old urls pointing to the new ones. Its here where you can delete ones you don't want anymore.
-
-Since version 1.9, you now get a sitemap that you can submit to google and bing. After installing the plugin, you can submit http://yoursite/301-sitemap.xml to google or bing.
-
-Since version 1.8.0, you can now create custom urls in your admin post/page edit page. Login to your wordpress site, go to any post/page and scroll down. You should find a Meta Box called SEO Redirect 301s. If you submit a url here and then browse to this url, it will redirect you to the page/post your editing.
 
 
 Built by The Marketing Mix Perth: http://www.marketingmix.com.au
