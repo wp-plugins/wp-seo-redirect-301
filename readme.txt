@@ -2,8 +2,8 @@
 Contributors: MMDeveloper, The Marketing Mix Osborne Park Perth
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
-Tested up to: 4.0
-Stable tag: 2.0.5
+Tested up to: 4.1
+Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,10 @@ Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 
 
 == Changelog ==
+
+= 2.0.6 =
+
+* Retain query string from old url.
 
 = 2.0.5 =
 
@@ -144,6 +148,10 @@ Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 
 
 == Upgrade notice ==
+
+= 2.0.6 =
+
+* Retain query string from old url.
 
 = 2.0.5 =
 

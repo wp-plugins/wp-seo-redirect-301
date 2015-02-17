@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 2.0.5
+Version: 2.0.6
 Author: Tom Skroza
 License: GPL2
 */
@@ -115,10 +115,14 @@ function seo_redirect_slt_theme_filter_404() {
 
       // Template is blank, which means page does not exist and is a 404. 
 
-      // Try to find record of a page with the current url.
-      $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."/'");
+      $seo_redirect_curl_page_url = preg_replace("/\/\?(.+)|\?(.+)/", "", seo_redirect_curl_page_url()); // Remove query string temp.
+      $matches = array();
+      $query_string = preg_match("/\?(.+)/", seo_redirect_curl_page_url(), $matches); // Get query string
+
+      // Try to find record of a page with the current url (with no query string).
+      $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".$seo_redirect_curl_page_url."/'");
       if ($row->post_id == "") {
-        $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".seo_redirect_curl_page_url()."'");
+        $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".$seo_redirect_curl_page_url."'");
       }
 
       if ($row != null) {
@@ -127,14 +131,25 @@ function seo_redirect_slt_theme_filter_404() {
         // Test to see if url is still the current url.
         if (TomM8::get_current_url() != get_permalink($row->post_id)) {
           // The url isn't current, so redirect.
-          wp_redirect(get_permalink($row->post_id),301);exit;
+          $transfer_query_string = "";
+          if ($matches) {
+            // Query string should be sent to new url.
+            $transfer_query_string = "?".$matches[0];
+          }
+
+          // Redirect to new url.
+          wp_redirect(get_permalink($row->post_id).$transfer_query_string,301);
+
+          exit;
         } else {
           // url is still current so therefore, don't render 404 page.
         }
       } else {
         // Continue as 404, we can't find the page so do nothing.
       }
-    } 
+    } else {
+      // Page exists, so it's not a 404.
+    }
   }         
 }  
 
