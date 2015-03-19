@@ -3,7 +3,7 @@ Contributors: MMDeveloper, The Marketing Mix Osborne Park Perth
 Tags: seo, redirect, 301, slug
 Requires at least: 3.0.1
 Tested up to: 4.1
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,7 @@ Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 
 == Installation ==
 
-1) Install WordPress 4.0 or higher
+1) Install WordPress 4.1 or higher
 
 2) Download the latest from:
 
@@ -41,6 +41,10 @@ Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 
 
 == Changelog ==
+
+= 2.0.7 =
+
+* Sometimes the new url does not exist, especially if it was deleted. So to account for this, send user to home page.
 
 = 2.0.6 =
 
@@ -148,6 +152,10 @@ Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 
 
 == Upgrade notice ==
+
+= 2.0.7 =
+
+* Sometimes the new url does not exist, especially if it was deleted. So to account for this, send user to home page.
 
 = 2.0.6 =
 
