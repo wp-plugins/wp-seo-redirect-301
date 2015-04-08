@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 2.0.7
+Version: 2.0.8
 Author: Tom Skroza
 License: GPL2
 */
@@ -85,79 +85,82 @@ function seo_redirect_curl_page_url() {
 add_action('template_redirect', 'seo_redirect_slt_theme_filter_404');  
 // Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
-  // Check to see if the current page is not the front page. If its the front page, it obviously exists, so don't bother redirecting it.
+  
+  // Check that you are not trying to search for a page. Search page should work.
+  if (!preg_match("/\?s=/", seo_redirect_curl_page_url())) {
+    // Check to see if the current page is not the front page. If its the front page, it obviously exists, so don't bother redirecting it.
+    if (!is_front_page()) {
+      global $wp_query, $post;
+      // Get the name of the current template. 
+      $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
 
-  if (!is_front_page()) {
-    global $wp_query, $post;
-    // Get the name of the current template. 
-    $template_name = get_post_meta( get_the_id(), '_wp_page_template', true );
-
-    $post_template_name = "";
-    $page_slug = str_replace(get_option("siteurl"), "", TomM8::get_current_url());
-    $page_slug = preg_replace("/\?(.+)*$/", "", $page_slug);
-    $args=array(
-      'name' => $page_slug,
-      'post_type' => 'post',
-      'post_status' => 'publish',
-      'numberposts' => 1
-    );
-    $my_posts = get_posts($args);
-    if( $my_posts ) {
-      if ($my_posts[0]->ID != "") {
-        $post_template_name = $my_posts[0]->ID;
-      }
-    }
-
-    $acceptable_values = array("post", "page");
-
-    // Check if page exists.
-    if ((($template_name == "" && $post_template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values))) { 
-
-      // Template is blank, which means page does not exist and is a 404. 
-      $seo_redirect_curl_page_url = preg_replace("/\/\?(.+)|\?(.+)/", "", seo_redirect_curl_page_url()); // Remove query string temp.
-      $matches = array();
-      $query_string = preg_match("/\?(.+)/", seo_redirect_curl_page_url(), $matches); // Get query string
-
-      // Try to find record of a page with the current url (with no query string).
-      $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".$seo_redirect_curl_page_url."/'");
-      if ($row->post_id == "") {
-        $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".$seo_redirect_curl_page_url."'");
+      $post_template_name = "";
+      $page_slug = str_replace(get_option("siteurl"), "", TomM8::get_current_url());
+      $page_slug = preg_replace("/\?(.+)*$/", "", $page_slug);
+      $args=array(
+        'name' => $page_slug,
+        'post_type' => 'post',
+        'post_status' => 'publish',
+        'numberposts' => 1
+      );
+      $my_posts = get_posts($args);
+      if( $my_posts ) {
+        if ($my_posts[0]->ID != "") {
+          $post_template_name = $my_posts[0]->ID;
+        }
       }
 
-      if ($row != null) {
-        // Record found, find id of old url, now use id to find current slug/permalink.
-        $post_row = TomM8::get_row("posts", "*", "ID=".$row->post_id);
-        // Test to see if url is still the current url.
-        if (TomM8::get_current_url() != get_permalink($row->post_id)) {
-          // The url isn't current, so redirect.
-          $transfer_query_string = "";
-          if ($matches) {
-            // Query string should be sent to new url.
-            $transfer_query_string = "?".$matches[0];
-          }
+      $acceptable_values = array("post", "page");
 
-          $tmp = get_permalink($row->post_id);
-          // Test if new url exists and is ok.
-          if (empty($tmp)) {
-            // If something has gone wrong, send to home page instead of blank screen.
-            $url = home_url( '/' );
-            wp_redirect($url.$transfer_query_string,301);
+      // Check if page exists.
+      if ((($template_name == "" && $post_template_name == "") || !in_array($wp_query->post->post_type, $acceptable_values))) { 
+
+        // Template is blank, which means page does not exist and is a 404. 
+        $seo_redirect_curl_page_url = preg_replace("/\/\?(.+)|\?(.+)/", "", seo_redirect_curl_page_url()); // Remove query string temp.
+        $matches = array();
+        $query_string = preg_match("/\?(.+)/", seo_redirect_curl_page_url(), $matches); // Get query string
+
+        // Try to find record of a page with the current url (with no query string).
+        $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".$seo_redirect_curl_page_url."/'");
+        if ($row->post_id == "") {
+          $row = TomM8::get_row("slug_history", "*", "post_id <> 0 AND url='".$seo_redirect_curl_page_url."'");
+        }
+
+        if ($row != null) {
+          // Record found, find id of old url, now use id to find current slug/permalink.
+          $post_row = TomM8::get_row("posts", "*", "ID=".$row->post_id);
+          // Test to see if url is still the current url.
+          if (TomM8::get_current_url() != get_permalink($row->post_id)) {
+            // The url isn't current, so redirect.
+            $transfer_query_string = "";
+            if ($matches) {
+              // Query string should be sent to new url.
+              $transfer_query_string = "?".$matches[0];
+            }
+
+            $tmp = get_permalink($row->post_id);
+            // Test if new url exists and is ok.
+            if (empty($tmp)) {
+              // If something has gone wrong, send to home page instead of blank screen.
+              $url = home_url( '/' );
+              wp_redirect($url.$transfer_query_string,301);
+            } else {
+              // Redirect to new url.
+              wp_redirect(get_permalink($row->post_id).$transfer_query_string,301);
+            }
+
+            exit;
           } else {
-            // Redirect to new url.
-            wp_redirect(get_permalink($row->post_id).$transfer_query_string,301);
+            // url is still current so therefore, don't render 404 page.
           }
-
-          exit;
         } else {
-          // url is still current so therefore, don't render 404 page.
+          // Continue as 404, we can't find the page so do nothing.
         }
       } else {
-        // Continue as 404, we can't find the page so do nothing.
+        // Page exists, so it's not a 404.
       }
-    } else {
-      // Page exists, so it's not a 404.
-    }
-  }         
+    }  
+  }       
 }  
 
 if (isset($_GET["post"]) && $_GET["post"] != "") {
