@@ -87,7 +87,7 @@ add_action('template_redirect', 'seo_redirect_slt_theme_filter_404');
 function seo_redirect_slt_theme_filter_404() {  
   
   // Check that you are not trying to search for a page. Search page should work.
-  if (!preg_match("/\?s=/", seo_redirect_curl_page_url())) {
+  if (!preg_match("/\?s=|\?attachment_id=/", seo_redirect_curl_page_url())) {
     // Check to see if the current page is not the front page. If its the front page, it obviously exists, so don't bother redirecting it.
     if (!is_front_page()) {
       global $wp_query, $post;
