@@ -3,7 +3,7 @@
 Plugin Name: SEO Redirect 301s
 Plugin URI: http://wordpress.org/extend/plugins/wp-seo-redirect-301/
 Description: Records urls and if a pages url changes, system redirects old url to the updated url.
-Version: 2.0.8
+Version: 2.0.9
 Author: Tom Skroza
 License: GPL2
 */
@@ -86,8 +86,10 @@ add_action('template_redirect', 'seo_redirect_slt_theme_filter_404');
 // Check if page exists.
 function seo_redirect_slt_theme_filter_404() {  
   
-  // Check that you are not trying to search for a page. Search page should work.
-  if (!preg_match("/\?s=|\?attachment_id=/", seo_redirect_curl_page_url())) {
+  // Check if url has a query string.
+  if (!preg_match("/\?/", seo_redirect_curl_page_url())) {
+    // Url does not have a query string.
+
     // Check to see if the current page is not the front page. If its the front page, it obviously exists, so don't bother redirecting it.
     if (!is_front_page()) {
       global $wp_query, $post;
@@ -160,7 +162,9 @@ function seo_redirect_slt_theme_filter_404() {
         // Page exists, so it's not a 404.
       }
     }  
-  }       
+  }  else {
+    // url has a query string so do nothing.
+  }     
 }  
 
 if (isset($_GET["post"]) && $_GET["post"] != "") {
